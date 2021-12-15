@@ -1,0 +1,11 @@
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\bin\Debug\netcoreapp3.0\WebBancoEnt.deps.json
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\bin\Debug\netcoreapp3.0\WebBancoEnt.dll
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\bin\Debug\netcoreapp3.0\WebBancoEnt.pdb
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\bin\Debug\netcoreapp3.0\WebBancoDat.dll
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\bin\Debug\netcoreapp3.0\WebBancoDat.pdb
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.csprojAssemblyReference.cache
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.AssemblyInfoInputs.cache
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.AssemblyInfo.cs
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.csproj.CopyComplete
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.dll
+C:\Users\Sergio\source\repos\WebBancoApi\WebBancoEnt\obj\Debug\netcoreapp3.0\WebBancoEnt.pdb

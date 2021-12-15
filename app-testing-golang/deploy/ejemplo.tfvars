@@ -1,0 +1,15 @@
+prefix                    = "app-golang"
+contact                   = "jcarpio"
+db_host                   = "a"
+db_name                   = "b"
+db_user                   = "c"
+db_pass                   = "d"
+desire_count              = 3
+memory_reservation        = 256
+memory                    = 512
+lb_listener_port          = 8090
+container_port            = 5000
+health_check_path         = "/"
+resource_api_gateway_path = "golang"
+repo_url                  = "851413509032.dkr.ecr.us-east-1.amazonaws.com/arquitect-basic-dev-app-repository-go"
+repo_id                   = "851413509032"

@@ -1,0 +1,23 @@
+trigger: none
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - manifest.json
+    - manifest.versions.json
+    - eng/*
+    - src/*
+    - tests/*
+
+variables:
+- template: variables/common.yml
+- name: manifest
+  value: manifest.json
+stages:
+- template: ../common/templates/stages/build-test-publish-repo.yml
+  parameters:
+    ${{ if eq(variables['System.TeamProject'], 'public') }}:
+      buildMatrixType: platformVersionedOs
+      customBuildLegGrouping: pr-build

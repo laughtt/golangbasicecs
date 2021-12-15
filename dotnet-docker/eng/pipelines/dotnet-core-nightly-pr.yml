@@ -1,0 +1,22 @@
+trigger: none
+pr:
+  branches:
+    include:
+    - nightly
+  paths:
+    include:
+    - manifest.json
+    - manifest.versions.json
+    - eng/*
+    - src/*
+    - tests/*
+
+variables:
+- template: variables/common.yml
+- name: manifest
+  value: manifest.json
+stages:
+- template: ../common/templates/stages/build-test-publish-repo.yml
+  parameters:
+    buildMatrixType: platformVersionedOs
+    customBuildLegGrouping: pr-build

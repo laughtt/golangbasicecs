@@ -1,0 +1,16 @@
+prefix                    = "app-test-core"
+project                   = "application-test-core"
+contact                   = "jcarpioherrera@gmail.om"
+db_host                   = "a"
+db_name                   = "b"
+db_user                   = "c"
+db_pass                   = "d"
+container_port            = 5000
+desire_count              = 2
+memory_reservation        = 256
+memory                    = 512
+lb_listener_port          = 8085
+health_check_path         = "/"
+resource_api_gateway_path = "testing"
+repo_url                  = "851413509032.dkr.ecr.us-east-1.amazonaws.com/arquitect-basic-dev-app-repository"
+repo_id                   = "851413509032"

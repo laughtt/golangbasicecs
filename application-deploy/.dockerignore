@@ -1,0 +1,14 @@
+docker-compose.yml
+README.md
+.git/
+.gitignore
+vol/
+deploy/
+# directories
+**/bin/
+**/obj/
+**/out/
+
+# files
+Dockerfile*
+**/*.md

@@ -1,0 +1,147 @@
+image:
+  name: hashicorp/terraform:0.12.28
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+stages:
+  - Testeo
+  - Build and Push
+  - Dev Plan
+  - Dev Apply
+  - Qa Plan
+  - Qa Apply
+  - Master Plan
+  - Master Apply
+  - Destroy
+
+Testear Aplicacion:
+   stage: Testeo
+   script:
+    - echo Testeo
+   rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(master|qa|dev)$/ || $CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/' 
+
+Validar Terraform:
+  stage: Testeo
+  script:
+    - cd deploy/
+    - terraform init -backend=false
+    - terraform validate
+    - terraform fmt -check
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(master|qa|dev)$/ || $CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+
+Build and Push:
+  image: docker:19.03.5
+  services:
+    - docker:19.03.5-dind
+  stage: Build and Push
+  script:
+    - apk add python3
+    - pip3 install awscli
+    - docker build --compress -t $ECR_REPO:$CI_COMMIT_SHORT_SHA .
+    - $(aws ecr get-login --no-include-email --region us-east-1)
+    - docker push $ECR_REPO:$CI_COMMIT_SHORT_SHA
+    - docker tag $ECR_REPO:$CI_COMMIT_SHORT_SHA $ECR_REPO:latest
+    - docker push $ECR_REPO:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+
+
+Dev Plan:
+  stage: Dev Plan
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select dev || terraform workspace new dev
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+
+Dev Apply:
+  stage: Dev Apply
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select dev
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+      when: manual
+Qa Plan:
+  stage: Qa Plan
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select qa || terraform workspace new qa
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+
+Qa Apply:
+  stage: Qa Apply
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select qa
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+      when: manual
+
+Master Plan:
+  stage: Master Plan
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select master || terraform workspace new master
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+Master Apply:
+  stage: Master Apply
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select master
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+Qa Destroy:
+  stage: Destroy
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select qa
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+      when: manual
+
+Dev Destroy:
+  stage: Destroy
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select dev
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+      when: manual
+
+Master Destroy:
+  stage: Destroy
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform workspace select master
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+

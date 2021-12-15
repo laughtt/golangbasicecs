@@ -1,0 +1,14 @@
+version: '3.0'
+
+services:
+  mibolsillo:
+    image: laught/mibolsillod
+    deploy:
+      resources:
+        limits: 
+          cpus : '1.0'
+          memory: 200M
+      replicas: 4
+    build: .
+    ports:
+      - 5000:5000

@@ -1,0 +1,112 @@
+image:
+  name: hashicorp/terraform:0.12.28
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+stages:
+  - Testeo
+  - Dev Plan
+  - Dev Apply
+  - Qa Plan
+  - Qa Apply
+  - Master Plan
+  - Master Apply
+  - Destroy
+
+Validar Terraform:
+  stage: Testeo
+  script:
+    - terraform init -backend=false
+    - terraform validate
+    - terraform fmt -check
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(master|qa|dev)$/ || $CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+
+Dev Plan:
+  stage: Dev Plan
+  script:
+    - terraform init
+    - terraform workspace select dev || terraform workspace new dev
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+
+Dev Apply:
+  stage: Dev Apply
+  script:
+    - terraform init
+    - terraform workspace select dev
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+      when: manual
+Qa Plan:
+  stage: Qa Plan
+  script:
+    - terraform init
+    - terraform workspace select qa || terraform workspace new qa
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+
+Qa Apply:
+  stage: Qa Apply
+  script:
+    - terraform init
+    - terraform workspace select qa
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+      when: manual
+
+Master Plan:
+  stage: Master Plan
+  script:
+    - terraform init
+    - terraform workspace select master || terraform workspace new master
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+Master Apply:
+  stage: Master Apply
+  script:
+    - terraform init
+    - terraform workspace select master
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+Qa Destroy:
+  stage: Destroy
+  script:
+    - terraform init
+    - terraform workspace select qa
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa)$/'
+      when: manual
+
+Dev Destroy:
+  stage: Destroy
+  script:
+    - terraform init
+    - terraform workspace select dev
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|qa|dev)$/'
+      when: manual
+
+Master Destroy:
+  stage: Destroy
+  script:
+    - terraform init
+    - terraform workspace select master
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+
